@@ -1,6 +1,5 @@
 LEX_FILE = projet.lex
 LEX_FILE_COMPILED = projet.yy.c
-LEX_LOG = projet.log
 ANALYSEUR = analyseur.o
 EXEMPLE = exemple.txt
 RESULTAT = resultat_compilation.txt
