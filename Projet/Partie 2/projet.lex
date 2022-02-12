@@ -1,16 +1,16 @@
 %{
-	   #include<stdio.h>
-       int texte=0;
-       int retour=0;
-       int balise=0;
-       int etle=0;
-       int point=0;
-       int under=0;
-       int ligVide=0;
+    #include<stdio.h>
+    int texte=0;
+    int retour=0;
+    int balise=0;
+    int etle=0;
+    int point=0;
+    int under=0;
+    int ligVide=0;
 %}
 
 %%
-[^" "\t#*_\n][^#*_\n]* {
+(^[^\t" "#*_\n])*[^#*_\n]* {
     texte++; 
     printf("Morceau de texte\n"); 
 }
@@ -43,6 +43,10 @@
 _ { 
     under++;
     printf("Underscore\n"); 
+}
+
+[^_] {
+    printf("Caractère non autorisé : %s\n", yytext);
 }
 %%
  int main(){
