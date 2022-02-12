@@ -1,4 +1,4 @@
-﻿Voici un texte qui contient des étoiles  * simples ou doubles **
+Voici un texte qui contient des étoiles  * simples ou doubles **
  un underscore pour tester _ et même deux __
 et des retours à la lignes simples, 
 
