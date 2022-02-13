@@ -14,6 +14,7 @@ Morceau de texte
 Ligne vide
 Morceau de texte
 Ligne vide
+Retour à la ligne simple
 Morceau de texte
 Retour à la ligne simple
 Point de liste
@@ -33,26 +34,24 @@ Ligne vide
 Morceau de texte
 Retour à la ligne simple
 Morceau de texte
-Caractère non autorisé : #
+Caractère non autorisé
 Retour à la ligne simple
-Morceau de texte
-Balise de début de titre
-Morceau de texte
-Retour à la ligne simple
-Caractère non autorisé : #
-Caractère non autorisé : #
-Caractère non autorisé : #
-Caractère non autorisé : #
+Caractère non autorisé
+Caractère non autorisé
 Morceau de texte
 Retour à la ligne simple
-Morceau de texte
-Etoile
+Caractère non autorisé
+Caractère non autorisé
+Caractère non autorisé
+Caractère non autorisé
 Morceau de texte
 Retour à la ligne simple
 Etoile
 Morceau de texte
 Retour à la ligne simple
+Etoile
 Morceau de texte
+Retour à la ligne simple
 
 
 

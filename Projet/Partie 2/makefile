@@ -5,7 +5,7 @@ EXEMPLE = exemple.txt
 RESULTAT = resultat_compilation.txt
 
 $(LEX_FILE_COMPILED):	$(LEX_FILE)
-	lex -o $(LEX_FILE_COMPILED) -v $(LEX_FILE) > $(LEX_LOG)
+	lex -o $(LEX_FILE_COMPILED) -v $(LEX_FILE)
 
 $(ANALYSEUR): $(LEX_FILE_COMPILED)
 	gcc -Wall $(LEX_FILE_COMPILED) -o $(ANALYSEUR) -lfl

@@ -7,20 +7,29 @@
     int point=0;
     int under=0;
     int ligVide=0;
+    int withDebug = 0;
 %}
 
 %%
-(^[^\t" "#*_\n])*[^#*_\n]* {
-    texte++; 
-    printf("Morceau de texte\n"); 
+[" "|\t] {
+    printf("");
 }
 
-" "{0,3}"#"{1,6}" "+ {
+[^\t" "#*_\n]+[^#*_\n]* {
+    texte++;
+    if(withDebug){
+        printf("Morceau de texte : %s\n",yytext);
+    }else{
+        printf("Morceau de texte\n");
+    } 
+}
+
+^" "{0,3}"#"{1,6}" "+ {
     balise++;
     printf("Balise de début de titre\n");
 }
 
-(\n" "*\n+)* {
+(\n" "*\n)+ {
     ligVide++; 
     printf("Ligne vide\n"); 
 }
@@ -46,7 +55,11 @@ _ {
 }
 
 [^_] {
-    printf("Caractère non autorisé : %s\n", yytext);
+    if(withDebug){
+        printf("Caractère non autorisé : %s\n", yytext);
+    }else{
+        printf("Caractère non autorisé\n");
+    }
 }
 %%
  int main(){
