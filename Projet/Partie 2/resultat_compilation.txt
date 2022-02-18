@@ -14,7 +14,6 @@ Morceau de texte
 Ligne vide
 Morceau de texte
 Ligne vide
-Retour à la ligne simple
 Morceau de texte
 Retour à la ligne simple
 Point de liste
@@ -51,8 +50,4 @@ Morceau de texte
 Retour à la ligne simple
 Etoile
 Morceau de texte
-Retour à la ligne simple
-
-
-
-
+Ligne vide

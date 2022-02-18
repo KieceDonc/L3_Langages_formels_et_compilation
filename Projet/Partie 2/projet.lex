@@ -1,5 +1,20 @@
 %{
+    /*
+    
+    Autheurs : 
+        - Valentin Verstracte
+        - DIALLO Boubacar Biro
+        - BARRY Thierno Oumar
+
+    Compiler :
+        make analyseur
+
+    Pour tester sur un fichier :
+        analyseur.o < (nom_du_fichier).txt
+        
+    */
     #include<stdio.h>
+    
     int texte=0;
     int retour=0;
     int balise=0;
@@ -29,12 +44,12 @@
     printf("Balise de début de titre\n");
 }
 
-(\n" "*\n)+ {
+\n" "*\n+ {
     ligVide++; 
     printf("Ligne vide\n"); 
 }
 
-\n|\r\n {
+\n|(\r\n) {
     retour++; 
     printf("Retour à la ligne simple\n");
 }
@@ -62,17 +77,3 @@ _ {
     }
 }
 %%
- int main(){
-    yylex(); 
-    printf("\n");printf("\n");printf("\n");printf("\n");
-    return 0;   
-}
-int yywrap(){ 
-  return 1; 
-}
-
-/*
-[\n ' ']+[\n ' '] { retour++; printf("Retour à la ligne simple\n"); }
-
-"##" { balise++; printf("Balise de titre\n"); }
-*/
