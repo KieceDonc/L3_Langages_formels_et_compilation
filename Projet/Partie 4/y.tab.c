@@ -70,10 +70,14 @@
 
     #include <stdio.h>
     #include <stdlib.h>
-    #include <string.h>
+
     void yyerror(char * s);
 
-#line 77 "y.tab.c"
+    int position = 0;
+    int it = 0;
+    int TAB[100][3];
+
+#line 81 "y.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -516,9 +520,9 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    35,    35,    36,    37,    38,    39,    40,    41,    42,
-      43,    44,    45,    46,    47,    48,    49,    50,    51,    52,
-      53,    54,    55
+       0,    39,    39,    40,    41,    42,    43,    44,    45,    46,
+      47,    48,    49,    50,    51,    52,    53,    54,    55,    56,
+      57,    58,    59
 };
 #endif
 
@@ -530,7 +534,7 @@ static const char *const yytname[] =
   "$end", "error", "$undefined", "TXT", "BALTIT", "FINTIT", "LIGVID",
   "DEBLIST", "ITEMLIST", "FINLIST", "ETOILE", "$accept", "fichier",
   "element", "titre", "liste", "suite_liste", "texte_formante", "italique",
-  "gras", "grasitalique", "liste_texte", YY_NULLPTR
+  "gras", "grasitalique", "liste_textes", YY_NULLPTR
 };
 #endif
 
@@ -1326,8 +1330,86 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
+  case 4:
+#line 41 "projet.yacc"
+                 {fillTab(yyvsp[0],0);}
+#line 1337 "y.tab.c"
+    break;
 
-#line 1331 "y.tab.c"
+  case 8:
+#line 45 "projet.yacc"
+                         {fillTab(yyval,0);}
+#line 1343 "y.tab.c"
+    break;
+
+  case 9:
+#line 46 "projet.yacc"
+                             {fillTab(yyvsp[-1],2);}
+#line 1349 "y.tab.c"
+    break;
+
+  case 13:
+#line 50 "projet.yacc"
+                             {yyval = yyvsp[0];}
+#line 1355 "y.tab.c"
+    break;
+
+  case 14:
+#line 51 "projet.yacc"
+               {yyval = yyvsp[0];}
+#line 1361 "y.tab.c"
+    break;
+
+  case 15:
+#line 52 "projet.yacc"
+                       {yyval = yyvsp[0];}
+#line 1367 "y.tab.c"
+    break;
+
+  case 16:
+#line 53 "projet.yacc"
+                                {yyval = yyvsp[-1];}
+#line 1373 "y.tab.c"
+    break;
+
+  case 17:
+#line 54 "projet.yacc"
+                                          {yyval = yyvsp[-2];}
+#line 1379 "y.tab.c"
+    break;
+
+  case 18:
+#line 55 "projet.yacc"
+                                                                {yyval = yyvsp[-3];}
+#line 1385 "y.tab.c"
+    break;
+
+  case 19:
+#line 56 "projet.yacc"
+                      {fillTab(yyvsp[0],1);}
+#line 1391 "y.tab.c"
+    break;
+
+  case 20:
+#line 57 "projet.yacc"
+                         {fillTab(yyvsp[0],1);}
+#line 1397 "y.tab.c"
+    break;
+
+  case 21:
+#line 58 "projet.yacc"
+                           {fillTab(yyvsp[-1],1);}
+#line 1403 "y.tab.c"
+    break;
+
+  case 22:
+#line 59 "projet.yacc"
+                                      {fillTab(yyvsp[-1],1);}
+#line 1409 "y.tab.c"
+    break;
+
+
+#line 1413 "y.tab.c"
 
       default: break;
     }
@@ -1559,8 +1641,41 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 56 "projet.yacc"
+#line 60 "projet.yacc"
 
+
+void fillTab(int length, int type){
+	TAB[it][0] = position;
+	TAB[it][1] = length;
+	TAB[it][2] = type;
+	position+=length;
+    it+=1;
+}
+
+void printLineTab(int index, char str[]){
+    printf("\t%d\t|\t%d\t|\t%s\t\n",TAB[index][0],TAB[index][1],str);
+}
+
+void printTAB(){
+	printf("position\t|length\t\t|type\t\n");
+	for(int x = 0 ; x < it ; x++){
+        int type = TAB[x][2];
+        switch(type){
+            case 0:{
+                printLineTab(x,"Normal");
+                break;
+            }
+            case 1:{
+                printLineTab(x,"Item");
+                break;
+            }
+            case 2:{
+                printLineTab(x,"Titre");
+                break;
+            }
+        } 
+    }
+}
 
 int main(){
     yyparse();
@@ -1568,6 +1683,11 @@ int main(){
     return 0;
 }
 
+void yywrap(){
+    printTAB();
+    return 1;
+}
+
 void yyerror(char *s){
-    fprintf(stderr, "erreur %s\n", s);
+    fprintf(stderr, "erreur syntaxique\n", s);
 }
