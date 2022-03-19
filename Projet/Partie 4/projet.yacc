@@ -29,23 +29,35 @@
 %token  FINLIST
 %token  ETOILE
 
-%start Fichier
+%start fichier
 
 %%
-    Fichier:Element | Element Fichier
-    Element:TXT | LIGVID | Titre | Liste | Texte_formante
-    Titre:BALTIT TXT FINTIT
-    Liste:DEBLIST Liste_texte Suite_liste
-    Suite_liste:ITEMLIST Liste_texte Suite_liste | FINLIST
-    Texte_formante:Italique | Gras | Grasitalique
-    Gras:ETOILE TXT ETOILE
-    Italique:ETOILE ETOILE TXT ETOILE ETOILE
-    Grasitalique:ETOILE ETOILE ETOILE TXT ETOILE ETOILE ETOILE
-    Liste_texte:TXT | Texte_formante | TXT Liste_texte | Texte_formante Liste_texte
+    fichier: element
+        | element fichier
+    element: TXT
+        | LIGVID
+        | titre
+        | liste
+        | texte_formante
+    titre: BALTIT TXT FINTIT
+    liste: DEBLIST liste_texte suite_liste
+    suite_liste: ITEMLIST liste_texte suite_liste
+        | FINLIST
+    texte_formante: italique
+        | gras
+        | grasitalique
+    italique: ETOILE TXT ETOILE
+    gras: ETOILE ETOILE TXT ETOILE ETOILE
+    grasitalique: ETOILE ETOILE ETOILE TXT ETOILE ETOILE ETOILE
+    liste_texte: TXT
+        | texte_formante
+        | TXT liste_texte
+        | texte_formante liste_texte
 %%
 
 int main(){
     yyparse();
+    yywrap();
     return 0;
 }
 

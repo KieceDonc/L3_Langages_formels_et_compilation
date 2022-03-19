@@ -15,19 +15,19 @@
     */
     #include<stdio.h>
     #include "y.tab.h"
-    int withDebug = 0;
-    char CH[1000];
-
+    int position = 1;
+    int it = 0;
+    int TAB[100][3];
 %}
 
-TXT ([^#*_\n]+)
-BALTIT (^" "{0,3}"#"{1,6}" "+)
-FINTIT (\n|\n" "*\n+)
-LIGVID ((\n|\r\n)(" "*(\n|\r\n))+)
-DEBLIST (^"*"" "+)
-ITEMLIST (^"*"" "+)
-FINLIST ((\n|\r\n)(" "*(\n|\r\n))+)
-ETOILE ("*")
+TXT [^#*_\n]+
+BALTIT ^" "{0,3}"#"{1,6}" "+
+FINTIT \n|\n" "*\n+
+LIGVID (\n|\r\n)(" "*(\n|\r\n))+
+DEBLIST ^"*"" "+
+ITEMLIST ^"*"" "+
+FINLIST (\n|\r\n)(" "*(\n|\r\n))+
+ETOILE "*"
 
 %start TITRE
 %start ITEM
@@ -38,37 +38,40 @@ ETOILE ("*")
 }
 
 {TXT} {
-    printf("Morceau de texte\n");
-    strcat(CH,yytext);
+    printf("Morceau de texte : %s\n",yytext);  
+    fillTab(position,yyleng,0);
     return TXT;
 }
 
-<INITIAL>{BALTIT} {
+{BALTIT} {
     printf("Balise de titre\n");
+    fillTab(position,yyleng,2);
     BEGIN TITRE;
     return BALTIT;
 }
 
 <TITRE>{FINTIT} {
     printf("Fin de titre\n");
+    fillTab(position,yyleng,2);
     BEGIN INITIAL;
     return FINTIT;
 }
 
-{LIGVID} {
+<INITIAL>{LIGVID} {
     printf("Ligne vide\n");
     return LIGVID; 
 }
 
 <INITIAL>{DEBLIST} {
     printf("Début de liste\n");
+    fillTab(position,yyleng,1);
     BEGIN ITEM;
     return DEBLIST;
 }
 
 <ITEM>{ITEMLIST} {
     printf("Item de liste\n");
-    BEGIN INITIAL;
+    fillTab(position,yyleng,1);
     return ITEMLIST;
 }
 
@@ -88,9 +91,41 @@ ETOILE ("*")
 }
 
 %%
+void fillTab(int posi, int length, int type){
+	TAB[it][0] = posi;
+	TAB[it][1] = length;
+	TAB[it][2] = type;
+	position+=length;
+    it+=1;
+} 
 
-int main()
-{
-    yyparse();
-    
+
+void printLineTab(int index, char str[]){
+    printf("\t%d\t|\t%d\t|\t%s\t\n",TAB[index][0],TAB[index][1],str);
+}
+
+void printTAB(){
+	printf("position\t|length\t\t|type\t\n");
+	for(int x = 0 ; x < it ; x++){
+        int type = TAB[x][2];
+        switch(type){
+            case 0:{
+                printLineTab(x,"normal");
+                break;
+            }
+            case 1:{
+                printLineTab(x,"item");
+                break;
+            }
+            case 2:{
+                printLineTab(x,"titre");
+                break;
+            }
+        } 
+    }
+}
+
+int yywrap(){
+    printTAB();
+    return 1;
 }
