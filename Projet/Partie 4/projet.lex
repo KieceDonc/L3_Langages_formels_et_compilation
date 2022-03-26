@@ -2,12 +2,13 @@
     /*
     
     Autheurs : 
-        - Valentin Verstracte
-        - DIALLO Boubacar Biro
-        - BARRY Thierno Oumar
+        - Valentin Verstracte (Environ 85 % du travail effectuer)
+        - DIALLO Boubacar Biro (Environ 5%)
+        - BARRY Thierno Oumar (Environ 10%)
+        - Im
 
     Compiler :
-        make analyseurs
+        make analyseur
 
     Pour tester sur un fichier :
         analyseur.o < (nom_du_fichier).txt
@@ -15,85 +16,135 @@
     */
     #include<stdio.h>
     #include "y.tab.h"
-    extern int yylval;
-
+    
+    int it = 0;
+    int TAB[100][3];
+    
+    char CH[1000];
+    
+    void yyerror(char * s);
 %}
 
 TXT [^\t" "#*_\n]+[^#*_\n]*
 BALTIT ^" "{0,3}"#"{1,6}" "+
-FINTIT \n|\n" "*\n+
+FINTIT (\n|\r\n)
 LIGVID (\n|\r\n)(" "*(\n|\r\n))+
 DEBLIST ^"*"" "+
 ITEMLIST ^"*"" "+
-FINLIST (\n|\r\n)(" "*(\n|\r\n))+
+FINLIST {LIGVID}
 ETOILE "*"
 
 %start TITRE
 %start ITEM
 
 %%
-[" "|\t] {
+(" "|\t)+ {
     printf("");
 }
 
-{TXT} {
-    printf("Morceau de texte : %s\n",yytext);
-    yylval = yyleng;
+<ITEM>{TXT} {
+    onText(yytext,1);
     return TXT;
 }
 
-{BALTIT} {
+<TITRE>{TXT} {
+    onText(yytext,2);
+    return TXT;
+}
+
+<INITIAL>{BALTIT} {
     printf("Balise de titre\n");
-    yylval = yyleng;
     BEGIN TITRE;
     return BALTIT;
 }
 
 <TITRE>{FINTIT} {
     printf("Fin de titre\n");
-    yylval = yyleng;
     BEGIN INITIAL;
     return FINTIT;
 }
 
 <INITIAL>{LIGVID} {
     printf("Ligne vide\n");
-    yylval = yyleng;
     return LIGVID; 
 }
 
 <INITIAL>{DEBLIST} {
     printf("Début de liste\n");
-    yylval = yyleng;
     BEGIN ITEM;
     return DEBLIST;
 }
 
 <ITEM>{ITEMLIST} {
     printf("Item de liste\n");
-    yylval = yyleng;
     return ITEMLIST;
 }
 
 <ITEM>{FINLIST} {
     printf("Fin de liste\n");
-    yylval = yyleng;
     BEGIN INITIAL;
-    return FINLIST;
+    return FINLIST; 
+}
+
+<INITIAL>{TXT} {
+    onText(yytext,0);
+    return TXT;
 }
 
 {ETOILE} {
     printf("Etoile\n");
-    yylval = yyleng; 
     return ETOILE;
 }
 
-\n {
-    printf("");
-}
+\n ;
 
 . {
     printf("Erreur lexicale : Caractère %s non autorisé\n",yytext);
 }
 
 %%
+
+void onText(char * str, int type){
+    printf("Morceau de texte : %s\n",str);
+
+    TAB[it][0] = strlen(CH);
+	TAB[it][1] = strlen(str);
+	TAB[it][2] = type;
+	strcat(CH,str);
+    it+=1;
+}
+
+void printLineTab(int index, char str[]){
+    printf("\t%d\t|\t%d\t|\t%s\t\n",TAB[index][0],TAB[index][1],str);
+}
+
+void printTAB(){
+	printf("position\t|length\t\t|type\t\n");
+	for(int x = 0 ; x < it ; x++){
+        int type = TAB[x][2];
+        switch(type){
+            case 0:{
+                printLineTab(x,"Normal");
+                break;
+            }
+            case 1:{
+                printLineTab(x,"Item");
+                break;
+            }
+            case 2:{
+                printLineTab(x,"Titre");
+                break;
+            }
+        } 
+    }
+}
+
+int main(){
+    yyparse();
+    printTAB();
+    return 0;
+}
+
+void yyerror(char *s){
+    fprintf(stderr, "Erreur syntaxique\n", s);
+}
