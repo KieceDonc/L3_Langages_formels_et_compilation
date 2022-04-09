@@ -70,9 +70,12 @@
 
     #include <stdio.h>
     #include <stdlib.h>
+    int listIndex = 0;
+    int inList = 0;
 
+    extern int TAB[100][5];
 
-#line 76 "y.tab.c"
+#line 79 "y.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -146,7 +149,15 @@ extern int yydebug;
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
+union YYSTYPE
+{
+#line 22 "projet.yacc"
+int indice;
+
+#line 158 "y.tab.c"
+
+};
+typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
 #endif
@@ -519,9 +530,9 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    34,    34,    35,    36,    37,    38,    39,    40,    41,
-      42,    43,    44,    45,    46,    47,    48,    49,    50,    51,
-      52,    53,    54,    55,    56,    57
+       0,    38,    38,    39,    40,    41,    42,    43,    44,    45,
+      46,    47,    48,    49,    50,    51,    52,    53,    54,    55,
+      56,    57,    58,    59,    60,    61
 };
 #endif
 
@@ -1335,8 +1346,74 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
+  case 7:
+#line 43 "projet.yacc"
+                {listIndex=0;inList = 0;changeTabValue(yyval.indice,3,-2);}
+#line 1353 "y.tab.c"
+    break;
 
-#line 1340 "y.tab.c"
+  case 16:
+#line 52 "projet.yacc"
+                                  {changeTabValue(yyval.indice,4,1);}
+#line 1359 "y.tab.c"
+    break;
+
+  case 17:
+#line 53 "projet.yacc"
+                                            {changeTabValue(yyval.indice,4,2);}
+#line 1365 "y.tab.c"
+    break;
+
+  case 18:
+#line 54 "projet.yacc"
+                                                                  {changeTabValue(yyval.indice,4,3);}
+#line 1371 "y.tab.c"
+    break;
+
+  case 19:
+#line 55 "projet.yacc"
+                         {initList(yyval.indice);listIndex++;}
+#line 1377 "y.tab.c"
+    break;
+
+  case 20:
+#line 56 "projet.yacc"
+                          {initList(yyval.indice);listIndex++;}
+#line 1383 "y.tab.c"
+    break;
+
+  case 21:
+#line 57 "projet.yacc"
+                             {initList(yyval.indice);}
+#line 1389 "y.tab.c"
+    break;
+
+  case 22:
+#line 58 "projet.yacc"
+                                      {initList(yyval.indice);}
+#line 1395 "y.tab.c"
+    break;
+
+  case 23:
+#line 59 "projet.yacc"
+               {handleList(yyval.indice);}
+#line 1401 "y.tab.c"
+    break;
+
+  case 24:
+#line 60 "projet.yacc"
+                    {handleList(yyval.indice);}
+#line 1407 "y.tab.c"
+    break;
+
+  case 25:
+#line 61 "projet.yacc"
+                       {handleList(yyval.indice);}
+#line 1413 "y.tab.c"
+    break;
+
+
+#line 1417 "y.tab.c"
 
       default: break;
     }
@@ -1568,4 +1645,24 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 58 "projet.yacc"
+#line 62 "projet.yacc"
+
+
+int initList(int indice){
+    if(!inList){
+        changeTabValue(indice,3,-1);
+        inList = 1;
+    }
+}
+
+int handleList(int indice){
+    if(inList){
+        if(TAB[indice][3]!=-1){
+            changeTabValue(indice,3,listIndex);
+        }
+    }
+}
+
+void changeTabValue(int indexD1, int indexD2,int value){
+    TAB[indexD1][indexD2]=value;
+}

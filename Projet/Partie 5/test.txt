@@ -1,4 +1,4 @@
-Exemple de texte \* de test
+Exemple de texte \\\\\* de test
 
 #  avec un titre de niveau 1
 ## et un titre de niveau 2

@@ -11,11 +11,12 @@
         analyseur.o < (nom_du_fichier).txt
         
     */
-    #include<stdio.h>
+    #include <stdio.h>
+    #include <string.h>
     #include "y.tab.h"
     
     int it = 0;
-    int TAB[100][3];
+    int TAB[100][5];
     
     char CH[1000];
     
@@ -24,6 +25,7 @@
 
 TXT ([^\t" "\\#*_\n]+[^#*\\_\n]*)*
 TXTETOILE \\\*
+TXTANTISLASH \\
 BALTIT ^" "{0,3}"#"{1,6}" "+
 FINTIT (\n|\r\n)
 LIGVID (\n|\r\n)(" "*(\n|\r\n))+
@@ -53,6 +55,21 @@ ETOILE "*"
 <INITIAL>{TXTETOILE} {
     onText("*",0);
     return TXTETOILE;
+}
+
+<ITEM>{TXTANTISLASH} {
+    onText("\\",1);
+    return TXTANTISLASH;
+}
+
+<TITRE>{TXTANTISLASH} {
+    onText("\\",2);
+    return TXTANTISLASH;
+}
+
+<INITIAL>{TXTANTISLASH} {
+    onText("\\",0);
+    return TXTANTISLASH;
 }
 
 <ITEM>{TXT} {
@@ -116,41 +133,89 @@ ETOILE "*"
 }
 
 %%
-void formatSpecialText(){
 
-}
 void onText(char * str, int type){
     printf("Morceau de texte : %s\n",str);
 
+    
     TAB[it][0] = strlen(CH);
 	TAB[it][1] = strlen(str);
 	TAB[it][2] = type;
-	strcat(CH,str);
+    TAB[it][3] = -3;
+    TAB[it][4] = 0;
+    strcat(CH,str);
+    yylval.indice = it;
     it+=1;
 }
 
-void printLineTab(int index, char str[]){
-    printf("\t%d\t|\t%d\t|\t%s\t\n",TAB[index][0],TAB[index][1],str);
+char* getType(int type){
+    switch(type){
+        case 0:{
+            return "Normal";
+            break;
+        }
+        case 1:{
+            return "Item";
+            break;
+        }
+        case 2:{
+            return "Titre";
+            break;
+        }
+    }
+}
+
+char* getShaping(int shaping){
+    switch(shaping){
+        case 0:{
+            return "";
+            break;
+        }
+        case 1:{
+            return "Italique";
+            break;
+        }
+        case 2:{
+            return "Gras";
+            break;
+        }
+        case 3:{
+            return "Italique & Gras";
+            break;
+        }
+    }
+}
+
+char* getListInfo(int listInfo, char* toConcat){
+    switch(listInfo){
+        case -1:{
+            return "Début\t";
+            break;
+        }
+        case -2:{
+            return "Fin\t";
+            break;
+        }
+        case -3:{
+            return "\t";
+            break;
+        }
+        default:{
+            sprintf(toConcat, "Item n°%d", listInfo);
+            return toConcat;
+        }
+    }
+}
+
+void printLineTab(int index, char type[], char listInfo[], char shaping[]){
+    printf("\t%d\t|\t%d\t|\t%s\t|\t%s\t|\t%s\t\n",TAB[index][0],TAB[index][1],type,listInfo,shaping);
 }
 
 void printTAB(){
-	printf("position\t|length\t\t|type\t\n");
+	printf("position\t|length\t\t|type\t\t|listInfo\t\t|shaping\n");
 	for(int x = 0 ; x < it ; x++){
-        int type = TAB[x][2];
-        switch(type){
-            case 0:{
-                printLineTab(x,"Normal");
-                break;
-            }
-            case 1:{
-                printLineTab(x,"Item");
-                break;
-            }
-            case 2:{
-                printLineTab(x,"Titre");
-                break;
-            }
-        } 
+        char toConcat[20];
+        printLineTab(x,getType(TAB[x][2]),getListInfo(TAB[x][3],toConcat),getShaping(TAB[x][4]));
     }
 }
 
