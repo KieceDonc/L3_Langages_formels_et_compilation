@@ -16,8 +16,9 @@
     #include <stdlib.h>
 
     FILE* htmlFile;
-    
-    int listIndex = 1;
+    int listHasStarted = 0;
+    int listItemHasStarted = 0;
+    int listItemIndex = 1;
     int tabHTML = 2;
 
     extern int TAB[100][5];
@@ -41,22 +42,22 @@
     element: TXT
         | LIGVID {writeInHTMLWithConcact("<br>",tabHTML);}
         | titre 
-        | liste {listIndex = 1;}
+        | liste {listItemIndex = 1;listHasStarted = 0; listItemHasStarted = 0;tabHTML--;writeInHTMLWithConcact("</ul>",tabHTML);}
         | texte_formatte 
-    titre: BALTIT TXT FINTIT {writeInHTMLWithConcact("<br>",tabHTML);}
-    liste: DEBLIST liste_textes suite_liste 
+    titre: BALTIT TXT FINTIT {writeInHTMLWithConcact("<br>",tabHTML);writeInHTMLHeader($1,$2);}
+    liste: DEBLIST liste_textes suite_liste
     suite_liste: ITEMLIST liste_textes suite_liste 
-        | FINLIST 
+        | FINLIST {writeInHTMLList($1);}
     texte_formatte: italique 
         | gras 
         | grasitalique 
     italique: ETOILE TXT ETOILE {changeTabValue($2,4,1);$$ = $2;}
     gras: ETOILE ETOILE TXT ETOILE ETOILE {changeTabValue($3,4,2);$$ = $3;}
     grasitalique: ETOILE ETOILE ETOILE TXT ETOILE ETOILE ETOILE {changeTabValue($4,4,3);$$ = $4;}
-    liste_textes: TXT  {changeTabValue($1,3,listIndex++);$$ = listIndex-1;}
-        | texte_formatte  {changeTabValue($1,3,listIndex++);$$ = listIndex-1;}
-        | TXT liste_textes {changeTabValue($1,3,$2); $$ = listIndex-1;}
-        | texte_formatte liste_textes {changeTabValue($1,3,$2); $$ = listIndex-1;}
+    liste_textes: TXT  {changeTabValue($1,3,listItemIndex++);$$ = listItemIndex-1;}
+        | texte_formatte  {changeTabValue($1,3,listItemIndex++);$$ = listItemIndex-1;}
+        | TXT liste_textes {changeTabValue($1,3,$2); $$ = listItemIndex-1;}
+        | texte_formatte liste_textes {changeTabValue($1,3,$2); $$ = listItemIndex-1;}
 %%
 
 void changeTabValue(int indexD1, int indexD2,int value){
@@ -67,6 +68,69 @@ void closeHTMLFilePointer(){
     if(htmlFile != NULL){
         fclose(htmlFile);
     }
+}
+
+void writeInHTMLList(int indexLastItem){
+    int founded = 0;
+    int index = indexLastItem-1;
+    while(!founded){
+        if(index > 0){
+            founded = TAB[index][3] == 0;
+        }else{
+            founded = 1;
+        }
+        index--;
+    }
+    index+=2;
+
+    int currentItemIndex = TAB[index][3];
+    for(int x = index; x <= indexLastItem; x++){
+        if(currentItemIndex == TAB[x+1][3]){
+            if(x!=indexLastItem){
+                writeInHTMLListHelper(x,0,1);
+            }else{
+                writeInHTMLListHelper(x,0,0);
+
+            }
+        }else{
+            writeInHTMLListHelper(x,1,1);
+            currentItemIndex = TAB[x+1][3];
+        }
+    }
+}
+
+void writeInHTMLListHelper(int textIndex, int changeItem, int allowOpenItem){
+    if(!listHasStarted){
+        writeInHTMLWithConcact("<ul>",tabHTML);
+        tabHTML++;
+        listHasStarted = 1;
+    }
+
+    if(!listItemHasStarted && allowOpenItem){
+        writeInHTMLWithConcact("<li>",tabHTML);
+        tabHTML++;
+        listItemHasStarted = 1;
+    }
+
+    writeInHTMLCHText(textIndex);
+
+    if(changeItem){
+        tabHTML--;
+        writeInHTMLWithConcact("</li>",tabHTML);
+        listItemHasStarted = 0;
+    }
+
+}
+
+void writeInHTMLHeader(int headerType, int textIndex){
+    char buffer[500];
+    sprintf(buffer, "<h%d>", headerType);
+    writeInHTMLWithConcact(buffer,tabHTML);
+    tabHTML++;
+    writeInHTMLCHText(textIndex);
+    tabHTML--;
+    sprintf(buffer, "</h%d>", headerType);
+    writeInHTMLWithConcact(buffer,tabHTML);
 }
 
 void writeBeginningHTML(){
@@ -82,11 +146,11 @@ void writeEndHTML(){
     closeHTMLFilePointer();
 }
 
-void writeInHTMLText(int index){
+void writeInHTMLCHText(int index){
     char text[500]; 
 	strncpy(text,&CH[TAB[index][0]],TAB[index][1]); 
     text[TAB[index][1]] = '\0'; 
-    writeInHTML(text);
+    writeInHTMLWithConcact(text,tabHTML);
 }
 
 void writeInHTMLWithConcact(char* text,int tabValue){

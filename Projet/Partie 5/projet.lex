@@ -52,6 +52,9 @@ ETOILE "*"
 
 <INITIAL>{BALTIT} {
     printf("Balise de titre\n");
+    int occ = 0;
+    for (occ=0; yytext[occ]; yytext[occ]=='#' ? occ++ : *yytext++); // Pas mon code, jolie trouvail de stackoverflow https://stackoverflow.com/a/4235884
+    yylval = occ;
     BEGIN TITRE;
     return BALTIT;
 }
@@ -80,6 +83,7 @@ ETOILE "*"
 
 <ITEM>{FINLIST} {
     printf("Fin de liste\n");
+    yylval = it;
     BEGIN INITIAL;
     return FINLIST; 
 }
@@ -155,7 +159,7 @@ char* getShaping(int shaping){
 
 char* getListInfo(int listInfo, char* toConcat){
     if(listInfo>0){
-        sprintf(toConcat, "Liste n°%d", listInfo);
+        sprintf(toConcat, "Item n°%d", listInfo);
         return toConcat;
     }else{
         return "\t";

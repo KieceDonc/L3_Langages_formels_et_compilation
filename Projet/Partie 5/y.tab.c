@@ -72,14 +72,15 @@
     #include <stdlib.h>
 
     FILE* htmlFile;
-    
-    int listIndex = 1;
+    int listHasStarted = 0;
+    int listItemHasStarted = 0;
+    int listItemIndex = 1;
     int tabHTML = 2;
 
     extern int TAB[100][5];
     extern char CH[1000];
 
-#line 83 "y.tab.c"
+#line 84 "y.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -522,9 +523,9 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    39,    39,    40,    41,    42,    43,    44,    45,    46,
-      47,    48,    49,    50,    51,    52,    53,    54,    55,    56,
-      57,    58,    59
+       0,    40,    40,    41,    42,    43,    44,    45,    46,    47,
+      48,    49,    50,    51,    52,    53,    54,    55,    56,    57,
+      58,    59,    60
 };
 #endif
 
@@ -1333,67 +1334,73 @@ yyreduce:
   switch (yyn)
     {
   case 5:
-#line 42 "projet.yacc"
+#line 43 "projet.yacc"
                  {writeInHTMLWithConcact("<br>",tabHTML);}
-#line 1339 "y.tab.c"
+#line 1340 "y.tab.c"
     break;
 
   case 7:
-#line 44 "projet.yacc"
-                {listIndex = 1;}
-#line 1345 "y.tab.c"
+#line 45 "projet.yacc"
+                {listItemIndex = 1;listHasStarted = 0; listItemHasStarted = 0;tabHTML--;writeInHTMLWithConcact("</ul>",tabHTML);}
+#line 1346 "y.tab.c"
     break;
 
   case 9:
-#line 46 "projet.yacc"
-                             {writeInHTMLWithConcact("<br>",tabHTML);}
-#line 1351 "y.tab.c"
+#line 47 "projet.yacc"
+                             {writeInHTMLWithConcact("<br>",tabHTML);writeInHTMLHeader(yyvsp[-2],yyvsp[-1]);}
+#line 1352 "y.tab.c"
+    break;
+
+  case 12:
+#line 50 "projet.yacc"
+                  {writeInHTMLList(yyvsp[0]);}
+#line 1358 "y.tab.c"
     break;
 
   case 16:
-#line 53 "projet.yacc"
+#line 54 "projet.yacc"
                                 {changeTabValue(yyvsp[-1],4,1);yyval = yyvsp[-1];}
-#line 1357 "y.tab.c"
+#line 1364 "y.tab.c"
     break;
 
   case 17:
-#line 54 "projet.yacc"
+#line 55 "projet.yacc"
                                           {changeTabValue(yyvsp[-2],4,2);yyval = yyvsp[-2];}
-#line 1363 "y.tab.c"
+#line 1370 "y.tab.c"
     break;
 
   case 18:
-#line 55 "projet.yacc"
+#line 56 "projet.yacc"
                                                                 {changeTabValue(yyvsp[-3],4,3);yyval = yyvsp[-3];}
-#line 1369 "y.tab.c"
+#line 1376 "y.tab.c"
     break;
 
   case 19:
-#line 56 "projet.yacc"
-                       {changeTabValue(yyvsp[0],3,listIndex++);yyval = listIndex-1;}
-#line 1375 "y.tab.c"
+#line 57 "projet.yacc"
+                       {changeTabValue(yyvsp[0],3,listItemIndex++);yyval = listItemIndex-1;}
+#line 1382 "y.tab.c"
     break;
 
   case 20:
-#line 57 "projet.yacc"
-                          {changeTabValue(yyvsp[0],3,listIndex++);yyval = listIndex-1;}
-#line 1381 "y.tab.c"
+#line 58 "projet.yacc"
+                          {changeTabValue(yyvsp[0],3,listItemIndex++);yyval = listItemIndex-1;}
+#line 1388 "y.tab.c"
     break;
 
   case 21:
-#line 58 "projet.yacc"
-                           {changeTabValue(yyvsp[-1],3,yyvsp[0]); yyval = listIndex-1;}
-#line 1387 "y.tab.c"
+#line 59 "projet.yacc"
+                           {changeTabValue(yyvsp[-1],3,yyvsp[0]); yyval = listItemIndex-1;}
+#line 1394 "y.tab.c"
     break;
 
   case 22:
-#line 59 "projet.yacc"
-                                      {changeTabValue(yyvsp[-1],3,yyvsp[0]); yyval = listIndex-1;}
-#line 1393 "y.tab.c"
+#line 60 "projet.yacc"
+                                      {changeTabValue(yyvsp[-1],3,yyvsp[0]); yyval = listItemIndex-1;}
+#line 1400 "y.tab.c"
     break;
 
 
-#line 1397 "y.tab.c"
+#line 1404 "y.tab.c"
 
       default: break;
     }
@@ -1625,7 +1632,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 60 "projet.yacc"
+#line 61 "projet.yacc"
 
 
 void changeTabValue(int indexD1, int indexD2,int value){
@@ -1636,6 +1643,69 @@ void closeHTMLFilePointer(){
     if(htmlFile != NULL){
         fclose(htmlFile);
     }
+}
+
+void writeInHTMLList(int indexLastItem){
+    int founded = 0;
+    int index = indexLastItem-1;
+    while(!founded){
+        if(index > 0){
+            founded = TAB[index][3] == 0;
+        }else{
+            founded = 1;
+        }
+        index--;
+    }
+    index+=2;
+
+    int currentItemIndex = TAB[index][3];
+    for(int x = index; x <= indexLastItem; x++){
+        if(currentItemIndex == TAB[x+1][3]){
+            if(x!=indexLastItem){
+                writeInHTMLListHelper(x,0,1);
+            }else{
+                writeInHTMLListHelper(x,0,0);
+
+            }
+        }else{
+            writeInHTMLListHelper(x,1,1);
+            currentItemIndex = TAB[x+1][3];
+        }
+    }
+}
+
+void writeInHTMLListHelper(int textIndex, int changeItem, int allowOpenItem){
+    if(!listHasStarted){
+        writeInHTMLWithConcact("<ul>",tabHTML);
+        tabHTML++;
+        listHasStarted = 1;
+    }
+
+    if(!listItemHasStarted && allowOpenItem){
+        writeInHTMLWithConcact("<li>",tabHTML);
+        tabHTML++;
+        listItemHasStarted = 1;
+    }
+
+    writeInHTMLCHText(textIndex);
+
+    if(changeItem){
+        tabHTML--;
+        writeInHTMLWithConcact("</li>",tabHTML);
+        listItemHasStarted = 0;
+    }
+
+}
+
+void writeInHTMLHeader(int headerType, int textIndex){
+    char buffer[500];
+    sprintf(buffer, "<h%d>", headerType);
+    writeInHTMLWithConcact(buffer,tabHTML);
+    tabHTML++;
+    writeInHTMLCHText(textIndex);
+    tabHTML--;
+    sprintf(buffer, "</h%d>", headerType);
+    writeInHTMLWithConcact(buffer,tabHTML);
 }
 
 void writeBeginningHTML(){
@@ -1651,11 +1721,11 @@ void writeEndHTML(){
     closeHTMLFilePointer();
 }
 
-void writeInHTMLText(int index){
+void writeInHTMLCHText(int index){
     char text[500]; 
 	strncpy(text,&CH[TAB[index][0]],TAB[index][1]); 
     text[TAB[index][1]] = '\0'; 
-    writeInHTML(text);
+    writeInHTMLWithConcact(text,tabHTML);
 }
 
 void writeInHTMLWithConcact(char* text,int tabValue){
