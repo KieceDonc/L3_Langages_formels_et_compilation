@@ -16,7 +16,7 @@
     #include "y.tab.h"
     
     int it = 0;
-    int TAB[100][5];
+    int TAB[100][6];
     
     char CH[1000];
     
@@ -136,7 +136,6 @@ ETOILE "*"
 
 void onText(char * str, int type){
     printf("Morceau de texte : %s\n",str);
-
     
     TAB[it][0] = strlen(CH);
 	TAB[it][1] = strlen(str);
@@ -168,7 +167,7 @@ char* getType(int type){
 char* getShaping(int shaping){
     switch(shaping){
         case 0:{
-            return "";
+            return "\t";
             break;
         }
         case 1:{
@@ -176,7 +175,7 @@ char* getShaping(int shaping){
             break;
         }
         case 2:{
-            return "Gras";
+            return "Gras\t";
             break;
         }
         case 3:{
@@ -207,22 +206,28 @@ char* getListInfo(int listInfo, char* toConcat){
     }
 }
 
-void printLineTab(int index, char type[], char listInfo[], char shaping[]){
-    printf("\t%d\t|\t%d\t|\t%s\t|\t%s\t|\t%s\t\n",TAB[index][0],TAB[index][1],type,listInfo,shaping);
-}
-
-void printTAB(){
-	printf("position\t|length\t\t|type\t\t|listInfo\t\t|shaping\n");
-	for(int x = 0 ; x < it ; x++){
-        char toConcat[20];
-        printLineTab(x,getType(TAB[x][2]),getListInfo(TAB[x][3],toConcat),getShaping(TAB[x][4]));
+char* getLineReturn(int type){
+    if(type){
+        return "Retour à la ligne";
+    }else{
+        return "";
     }
 }
 
-int main(){
-    yyparse();
+void printLineTab(int index, char type[], char listInfo[], char shaping[], char lineReturn[]){
+    printf("\t%d\t|\t%d\t|\t%s\t|\t%s\t|\t%s\t|\t%s\t\n",TAB[index][0],TAB[index][1],type,listInfo,shaping,lineReturn);
+}
+
+void printTAB(){
+	printf("\n\n\nposition\t|length\t\t|type\t\t|listInfo\t\t|shaping\t\t|lineReturn\n");
+	for(int x = 0 ; x < it ; x++){
+        char toConcat[20];
+        printLineTab(x,getType(TAB[x][2]),getListInfo(TAB[x][3],toConcat),getShaping(TAB[x][4]),getLineReturn(TAB[x][5]));
+    }
+}
+
+yywrap(){
     printTAB();
-    return 0;
 }
 
 void yyerror(char *s){

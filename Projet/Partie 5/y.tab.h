@@ -77,7 +77,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 22 "projet.yacc"
+#line 26 "projet.yacc"
 int indice;
 
 #line 84 "y.tab.h"

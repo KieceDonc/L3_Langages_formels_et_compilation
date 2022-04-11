@@ -70,12 +70,16 @@
 
     #include <stdio.h>
     #include <stdlib.h>
+
+    FILE* htmlFile;
+    
     int listIndex = 0;
     int inList = 0;
+    int tabHTML = 2;
 
-    extern int TAB[100][5];
+    extern int TAB[100][6];
 
-#line 79 "y.tab.c"
+#line 83 "y.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -151,10 +155,10 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 22 "projet.yacc"
+#line 26 "projet.yacc"
 int indice;
 
-#line 158 "y.tab.c"
+#line 162 "y.tab.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -530,9 +534,9 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    38,    38,    39,    40,    41,    42,    43,    44,    45,
-      46,    47,    48,    49,    50,    51,    52,    53,    54,    55,
-      56,    57,    58,    59,    60,    61
+       0,    42,    42,    43,    44,    45,    46,    47,    48,    49,
+      50,    51,    52,    53,    54,    55,    56,    57,    58,    59,
+      60,    61,    62,    63,    64,    65
 };
 #endif
 
@@ -1346,74 +1350,92 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
+  case 5:
+#line 45 "projet.yacc"
+                 {changeTabValue(yyval.indice,5,1);writeInHTMLWithContact("<br>",tabHTML);}
+#line 1357 "y.tab.c"
+    break;
+
   case 7:
-#line 43 "projet.yacc"
-                {listIndex=0;inList = 0;changeTabValue(yyval.indice,3,-2);}
-#line 1353 "y.tab.c"
+#line 47 "projet.yacc"
+                {listIndex=0;inList = 0;}
+#line 1363 "y.tab.c"
+    break;
+
+  case 9:
+#line 49 "projet.yacc"
+                               {changeTabValue(yyval.indice,5,1);writeInHTMLWithContact("<br>",tabHTML);}
+#line 1369 "y.tab.c"
+    break;
+
+  case 12:
+#line 52 "projet.yacc"
+                  {changeTabValue(yyval.indice,5,1);changeTabValue(yyval.indice,3,-2);writeInHTMLWithContact("</ul>",--tabHTML);writeInHTMLWithContact("<br>",tabHTML);}
+#line 1375 "y.tab.c"
     break;
 
   case 16:
-#line 52 "projet.yacc"
+#line 56 "projet.yacc"
                                   {changeTabValue(yyval.indice,4,1);}
-#line 1359 "y.tab.c"
+#line 1381 "y.tab.c"
     break;
 
   case 17:
-#line 53 "projet.yacc"
+#line 57 "projet.yacc"
                                             {changeTabValue(yyval.indice,4,2);}
-#line 1365 "y.tab.c"
+#line 1387 "y.tab.c"
     break;
 
   case 18:
-#line 54 "projet.yacc"
+#line 58 "projet.yacc"
                                                                   {changeTabValue(yyval.indice,4,3);}
-#line 1371 "y.tab.c"
+#line 1393 "y.tab.c"
     break;
 
   case 19:
-#line 55 "projet.yacc"
+#line 59 "projet.yacc"
                          {initList(yyval.indice);listIndex++;}
-#line 1377 "y.tab.c"
+#line 1399 "y.tab.c"
     break;
 
   case 20:
-#line 56 "projet.yacc"
+#line 60 "projet.yacc"
                           {initList(yyval.indice);listIndex++;}
-#line 1383 "y.tab.c"
+#line 1405 "y.tab.c"
     break;
 
   case 21:
-#line 57 "projet.yacc"
+#line 61 "projet.yacc"
                              {initList(yyval.indice);}
-#line 1389 "y.tab.c"
+#line 1411 "y.tab.c"
     break;
 
   case 22:
-#line 58 "projet.yacc"
+#line 62 "projet.yacc"
                                       {initList(yyval.indice);}
-#line 1395 "y.tab.c"
+#line 1417 "y.tab.c"
     break;
 
   case 23:
-#line 59 "projet.yacc"
+#line 63 "projet.yacc"
                {handleList(yyval.indice);}
-#line 1401 "y.tab.c"
+#line 1423 "y.tab.c"
     break;
 
   case 24:
-#line 60 "projet.yacc"
+#line 64 "projet.yacc"
                     {handleList(yyval.indice);}
-#line 1407 "y.tab.c"
+#line 1429 "y.tab.c"
     break;
 
   case 25:
-#line 61 "projet.yacc"
+#line 65 "projet.yacc"
                        {handleList(yyval.indice);}
-#line 1413 "y.tab.c"
+#line 1435 "y.tab.c"
     break;
 
 
-#line 1417 "y.tab.c"
+#line 1439 "y.tab.c"
 
       default: break;
     }
@@ -1645,24 +1667,66 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 62 "projet.yacc"
+#line 66 "projet.yacc"
 
 
 int initList(int indice){
     if(!inList){
         changeTabValue(indice,3,-1);
         inList = 1;
+        writeInHTMLWithContact("<ul>",tabHTML++);
+        writeInHTMLWithContact("<li>Some text</li>",tabHTML);
     }
 }
 
 int handleList(int indice){
     if(inList){
         if(TAB[indice][3]!=-1){
-            changeTabValue(indice,3,listIndex);
+            changeTabValue(indice,3,listIndex+1);
+            writeInHTMLWithContact("<li>Some text</li>",tabHTML);
         }
     }
 }
 
 void changeTabValue(int indexD1, int indexD2,int value){
     TAB[indexD1][indexD2]=value;
+}
+
+void closeHTMLFilePointer(){
+    if(htmlFile != NULL){
+        fclose(htmlFile);
+    }
+}
+
+void writeBeginningHTML(){
+    htmlFile = fopen("projet.html", "w");
+    fprintf(htmlFile, "");
+    closeHTMLFilePointer();
+    htmlFile = fopen("projet.html", "a");
+    writeInHTML("<!DOCTYPE html>\n<html>\n\t<head>\n\t\t<meta charset='utf-8'>\n\t\t<title>Projet LFC</title>\n\t</head>\n\t<body>\n");   
+}
+
+void writeEndHTML(){
+    writeInHTML("\n\t</body>\n</html>");
+    closeHTMLFilePointer();
+}
+
+void writeInHTMLWithContact(char* text,int tabValue){
+    for(int x = 0; x < tabValue ; x++){
+        writeInHTML("\t");
+    }
+    writeInHTML(text);
+    writeInHTML("\n");
+}
+
+void writeInHTML(char* text){
+    fprintf(htmlFile, "%s", text);
+}
+
+int main(){
+    writeBeginningHTML();
+    yyparse();
+    yywrap();
+    writeEndHTML();
+    return 0;
 }
