@@ -50,40 +50,28 @@ extern int yydebug;
   enum yytokentype
   {
     TXT = 258,
-    TXTETOILE = 259,
-    TXTANTISLASH = 260,
-    BALTIT = 261,
-    FINTIT = 262,
-    LIGVID = 263,
-    DEBLIST = 264,
-    ITEMLIST = 265,
-    FINLIST = 266,
-    ETOILE = 267
+    BALTIT = 259,
+    FINTIT = 260,
+    LIGVID = 261,
+    DEBLIST = 262,
+    ITEMLIST = 263,
+    FINLIST = 264,
+    ETOILE = 265
   };
 #endif
 /* Tokens.  */
 #define TXT 258
-#define TXTETOILE 259
-#define TXTANTISLASH 260
-#define BALTIT 261
-#define FINTIT 262
-#define LIGVID 263
-#define DEBLIST 264
-#define ITEMLIST 265
-#define FINLIST 266
-#define ETOILE 267
+#define BALTIT 259
+#define FINTIT 260
+#define LIGVID 261
+#define DEBLIST 262
+#define ITEMLIST 263
+#define FINLIST 264
+#define ETOILE 265
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-union YYSTYPE
-{
-#line 26 "projet.yacc"
-int indice;
-
-#line 84 "y.tab.h"
-
-};
-typedef union YYSTYPE YYSTYPE;
+typedef int YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
 #endif

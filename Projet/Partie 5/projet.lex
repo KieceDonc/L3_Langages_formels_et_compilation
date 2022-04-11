@@ -16,16 +16,14 @@
     #include "y.tab.h"
     
     int it = 0;
-    int TAB[100][6];
+    int TAB[100][5];
     
     char CH[1000];
     
     void yyerror(char * s);
 %}
 
-TXT ([^\t" "\\#*_\n]+[^#*\\_\n]*)*
-TXTETOILE \\\*
-TXTANTISLASH \\
+TXT (([^\t" "\\#*_\n]+[^#*\\_\n]*)|\\\*|\\|\\\*" "|\\" ")*
 BALTIT ^" "{0,3}"#"{1,6}" "+
 FINTIT (\n|\r\n)
 LIGVID (\n|\r\n)(" "*(\n|\r\n))+
@@ -40,36 +38,6 @@ ETOILE "*"
 %%
 (" "|\t)+ {
     printf("");
-}
-
-<ITEM>{TXTETOILE} {
-    onText("*",1);
-    return TXTETOILE;
-}
-
-<TITRE>{TXTETOILE} {
-    onText("*",2);
-    return TXTETOILE;
-}
-
-<INITIAL>{TXTETOILE} {
-    onText("*",0);
-    return TXTETOILE;
-}
-
-<ITEM>{TXTANTISLASH} {
-    onText("\\",1);
-    return TXTANTISLASH;
-}
-
-<TITRE>{TXTANTISLASH} {
-    onText("\\",2);
-    return TXTANTISLASH;
-}
-
-<INITIAL>{TXTANTISLASH} {
-    onText("\\",0);
-    return TXTANTISLASH;
 }
 
 <ITEM>{TXT} {
@@ -140,10 +108,10 @@ void onText(char * str, int type){
     TAB[it][0] = strlen(CH);
 	TAB[it][1] = strlen(str);
 	TAB[it][2] = type;
-    TAB[it][3] = -3;
+    TAB[it][3] = 0;
     TAB[it][4] = 0;
     strcat(CH,str);
-    yylval.indice = it;
+    yylval = it;
     it+=1;
 }
 
@@ -186,43 +154,23 @@ char* getShaping(int shaping){
 }
 
 char* getListInfo(int listInfo, char* toConcat){
-    switch(listInfo){
-        case -1:{
-            return "Début\t";
-            break;
-        }
-        case -2:{
-            return "Fin\t";
-            break;
-        }
-        case -3:{
-            return "\t";
-            break;
-        }
-        default:{
-            sprintf(toConcat, "Item n°%d", listInfo);
-            return toConcat;
-        }
-    }
-}
-
-char* getLineReturn(int type){
-    if(type){
-        return "Retour à la ligne";
+    if(listInfo>0){
+        sprintf(toConcat, "Liste n°%d", listInfo);
+        return toConcat;
     }else{
-        return "";
+        return "\t";
     }
 }
 
-void printLineTab(int index, char type[], char listInfo[], char shaping[], char lineReturn[]){
-    printf("\t%d\t|\t%d\t|\t%s\t|\t%s\t|\t%s\t|\t%s\t\n",TAB[index][0],TAB[index][1],type,listInfo,shaping,lineReturn);
+void printLineTab(int index, char type[], char listInfo[], char shaping[]){
+    printf("\t%d\t|\t%d\t|\t%s\t|\t%s\t|\t%s\n",TAB[index][0],TAB[index][1],type,listInfo,shaping);
 }
 
 void printTAB(){
-	printf("\n\n\nposition\t|length\t\t|type\t\t|listInfo\t\t|shaping\t\t|lineReturn\n");
+	printf("\n\n\nposition\t|length\t\t|type\t\t|listInfo\t\t|shaping\n");
 	for(int x = 0 ; x < it ; x++){
         char toConcat[20];
-        printLineTab(x,getType(TAB[x][2]),getListInfo(TAB[x][3],toConcat),getShaping(TAB[x][4]),getLineReturn(TAB[x][5]));
+        printLineTab(x,getType(TAB[x][2]),getListInfo(TAB[x][3],toConcat),getShaping(TAB[x][4]));
     }
 }
 

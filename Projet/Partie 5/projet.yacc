@@ -17,17 +17,14 @@
 
     FILE* htmlFile;
     
-    int listIndex = 0;
-    int inList = 0;
+    int listIndex = 1;
     int tabHTML = 2;
 
-    extern int TAB[100][6];
+    extern int TAB[100][5];
+    extern char CH[1000];
 %}
-%union {int indice;}
 
 %token  TXT
-%token  TXTETOILE
-%token  TXTANTISLASH
 %token  BALTIT
 %token  FINTIT
 %token  LIGVID 
@@ -40,48 +37,27 @@
 
 %%
     fichier: element 
-        | element fichier
-    element: texte
-        | LIGVID {changeTabValue(yyval.indice,5,1);writeInHTMLWithContact("<br>",tabHTML);}
+        | element fichier 
+    element: TXT
+        | LIGVID {writeInHTMLWithConcact("<br>",tabHTML);}
         | titre 
-        | liste {listIndex=0;inList = 0;}
+        | liste {listIndex = 1;}
         | texte_formatte 
-    titre: BALTIT texte FINTIT {changeTabValue(yyval.indice,5,1);writeInHTMLWithContact("<br>",tabHTML);}
-    liste: DEBLIST liste_textes suite_liste
+    titre: BALTIT TXT FINTIT {writeInHTMLWithConcact("<br>",tabHTML);}
+    liste: DEBLIST liste_textes suite_liste 
     suite_liste: ITEMLIST liste_textes suite_liste 
-        | FINLIST {changeTabValue(yyval.indice,5,1);changeTabValue(yyval.indice,3,-2);writeInHTMLWithContact("</ul>",--tabHTML);writeInHTMLWithContact("<br>",tabHTML);}
+        | FINLIST 
     texte_formatte: italique 
         | gras 
         | grasitalique 
-    italique: ETOILE texte ETOILE {changeTabValue(yyval.indice,4,1);}
-    gras: ETOILE ETOILE texte ETOILE ETOILE {changeTabValue(yyval.indice,4,2);}
-    grasitalique: ETOILE ETOILE ETOILE texte ETOILE ETOILE ETOILE {changeTabValue(yyval.indice,4,3);}
-    liste_textes: texte  {initList(yyval.indice);listIndex++;}
-        | texte_formatte  {initList(yyval.indice);listIndex++;}
-        | texte liste_textes {initList(yyval.indice);}
-        | texte_formatte liste_textes {initList(yyval.indice);}
-    texte: TXT {handleList(yyval.indice);}
-        | TXTETOILE {handleList(yyval.indice);}
-        | TXTANTISLASH {handleList(yyval.indice);}
+    italique: ETOILE TXT ETOILE {changeTabValue($2,4,1);$$ = $2;}
+    gras: ETOILE ETOILE TXT ETOILE ETOILE {changeTabValue($3,4,2);$$ = $3;}
+    grasitalique: ETOILE ETOILE ETOILE TXT ETOILE ETOILE ETOILE {changeTabValue($4,4,3);$$ = $4;}
+    liste_textes: TXT  {changeTabValue($1,3,listIndex++);$$ = listIndex-1;}
+        | texte_formatte  {changeTabValue($1,3,listIndex++);$$ = listIndex-1;}
+        | TXT liste_textes {changeTabValue($1,3,$2); $$ = listIndex-1;}
+        | texte_formatte liste_textes {changeTabValue($1,3,$2); $$ = listIndex-1;}
 %%
-
-int initList(int indice){
-    if(!inList){
-        changeTabValue(indice,3,-1);
-        inList = 1;
-        writeInHTMLWithContact("<ul>",tabHTML++);
-        writeInHTMLWithContact("<li>Some text</li>",tabHTML);
-    }
-}
-
-int handleList(int indice){
-    if(inList){
-        if(TAB[indice][3]!=-1){
-            changeTabValue(indice,3,listIndex+1);
-            writeInHTMLWithContact("<li>Some text</li>",tabHTML);
-        }
-    }
-}
 
 void changeTabValue(int indexD1, int indexD2,int value){
     TAB[indexD1][indexD2]=value;
@@ -106,7 +82,14 @@ void writeEndHTML(){
     closeHTMLFilePointer();
 }
 
-void writeInHTMLWithContact(char* text,int tabValue){
+void writeInHTMLText(int index){
+    char text[500]; 
+	strncpy(text,&CH[TAB[index][0]],TAB[index][1]); 
+    text[TAB[index][1]] = '\0'; 
+    writeInHTML(text);
+}
+
+void writeInHTMLWithConcact(char* text,int tabValue){
     for(int x = 0; x < tabValue ; x++){
         writeInHTML("\t");
     }
