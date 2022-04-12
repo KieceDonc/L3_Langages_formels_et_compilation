@@ -1333,74 +1333,86 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
+  case 4:
+#line 42 "projet.yacc"
+                 {writeInHTMLWithConcact("<p>",tabHTML);writeInHTMLCHText(yyvsp[0],tabHTML);writeInHTMLWithConcact("</p>",tabHTML);}
+#line 1340 "y.tab.c"
+    break;
+
   case 5:
 #line 43 "projet.yacc"
                  {writeInHTMLWithConcact("<br>",tabHTML);}
-#line 1340 "y.tab.c"
+#line 1346 "y.tab.c"
     break;
 
   case 7:
 #line 45 "projet.yacc"
                 {listItemIndex = 1;listHasStarted = 0; listItemHasStarted = 0;tabHTML--;writeInHTMLWithConcact("</ul>",tabHTML);}
-#line 1346 "y.tab.c"
+#line 1352 "y.tab.c"
+    break;
+
+  case 8:
+#line 46 "projet.yacc"
+                         {writeInHTMLWithConcact("<p>",tabHTML);writeInHTMLCHText(yyvsp[0],tabHTML);writeInHTMLWithConcact("</p>",tabHTML);}
+#line 1358 "y.tab.c"
     break;
 
   case 9:
 #line 47 "projet.yacc"
                              {writeInHTMLWithConcact("<br>",tabHTML);writeInHTMLHeader(yyvsp[-2],yyvsp[-1]);}
-#line 1352 "y.tab.c"
+#line 1364 "y.tab.c"
     break;
 
   case 12:
 #line 50 "projet.yacc"
                   {writeInHTMLList(yyvsp[0]);}
-#line 1358 "y.tab.c"
+#line 1370 "y.tab.c"
     break;
 
   case 16:
 #line 54 "projet.yacc"
                                 {changeTabValue(yyvsp[-1],4,1);yyval = yyvsp[-1];}
-#line 1364 "y.tab.c"
+#line 1376 "y.tab.c"
     break;
 
   case 17:
 #line 55 "projet.yacc"
                                           {changeTabValue(yyvsp[-2],4,2);yyval = yyvsp[-2];}
-#line 1370 "y.tab.c"
+#line 1382 "y.tab.c"
     break;
 
   case 18:
 #line 56 "projet.yacc"
                                                                 {changeTabValue(yyvsp[-3],4,3);yyval = yyvsp[-3];}
-#line 1376 "y.tab.c"
+#line 1388 "y.tab.c"
     break;
 
   case 19:
 #line 57 "projet.yacc"
                        {changeTabValue(yyvsp[0],3,listItemIndex++);yyval = listItemIndex-1;}
-#line 1382 "y.tab.c"
+#line 1394 "y.tab.c"
     break;
 
   case 20:
 #line 58 "projet.yacc"
                           {changeTabValue(yyvsp[0],3,listItemIndex++);yyval = listItemIndex-1;}
-#line 1388 "y.tab.c"
+#line 1400 "y.tab.c"
     break;
 
   case 21:
 #line 59 "projet.yacc"
                            {changeTabValue(yyvsp[-1],3,yyvsp[0]); yyval = listItemIndex-1;}
-#line 1394 "y.tab.c"
+#line 1406 "y.tab.c"
     break;
 
   case 22:
 #line 60 "projet.yacc"
                                       {changeTabValue(yyvsp[-1],3,yyvsp[0]); yyval = listItemIndex-1;}
-#line 1400 "y.tab.c"
+#line 1412 "y.tab.c"
     break;
 
 
-#line 1404 "y.tab.c"
+#line 1416 "y.tab.c"
 
       default: break;
     }
@@ -1725,7 +1737,35 @@ void writeInHTMLCHText(int index){
     char text[500]; 
 	strncpy(text,&CH[TAB[index][0]],TAB[index][1]); 
     text[TAB[index][1]] = '\0'; 
+    switch(TAB[index][4]){
+        case 1:{
+            writeInHTMLWithConcact("<i>",tabHTML);
+            break;
+        }
+        case 2:{
+            writeInHTMLWithConcact("<strong>",tabHTML);
+            break;
+        }
+        case 3:{
+            writeInHTMLWithConcact("<i><strong>",tabHTML);
+            break;
+        }
+    }
     writeInHTMLWithConcact(text,tabHTML);
+    switch(TAB[index][4]){
+        case 1:{
+            writeInHTMLWithConcact("</i>",tabHTML);
+            break;
+        }
+        case 2:{
+            writeInHTMLWithConcact("</strong>",tabHTML);
+            break;
+        }
+        case 3:{
+            writeInHTMLWithConcact("</i></strong>",tabHTML);
+            break;
+        }
+    }
 }
 
 void writeInHTMLWithConcact(char* text,int tabValue){

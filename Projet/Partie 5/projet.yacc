@@ -39,11 +39,11 @@
 %%
     fichier: element 
         | element fichier 
-    element: TXT
+    element: TXT {writeInHTMLWithConcact("<p>",tabHTML);writeInHTMLCHText($1,tabHTML);writeInHTMLWithConcact("</p>",tabHTML);}
         | LIGVID {writeInHTMLWithConcact("<br>",tabHTML);}
         | titre 
         | liste {listItemIndex = 1;listHasStarted = 0; listItemHasStarted = 0;tabHTML--;writeInHTMLWithConcact("</ul>",tabHTML);}
-        | texte_formatte 
+        | texte_formatte {writeInHTMLWithConcact("<p>",tabHTML);writeInHTMLCHText($1,tabHTML);writeInHTMLWithConcact("</p>",tabHTML);}
     titre: BALTIT TXT FINTIT {writeInHTMLWithConcact("<br>",tabHTML);writeInHTMLHeader($1,$2);}
     liste: DEBLIST liste_textes suite_liste
     suite_liste: ITEMLIST liste_textes suite_liste 
@@ -69,7 +69,9 @@ void closeHTMLFilePointer(){
         fclose(htmlFile);
     }
 }
-
+void writeInHTMLParagraphe(int textIndex){
+    
+}
 void writeInHTMLList(int indexLastItem){
     int founded = 0;
     int index = indexLastItem-1;
@@ -150,7 +152,35 @@ void writeInHTMLCHText(int index){
     char text[500]; 
 	strncpy(text,&CH[TAB[index][0]],TAB[index][1]); 
     text[TAB[index][1]] = '\0'; 
+    switch(TAB[index][4]){
+        case 1:{
+            writeInHTMLWithConcact("<i>",tabHTML);
+            break;
+        }
+        case 2:{
+            writeInHTMLWithConcact("<strong>",tabHTML);
+            break;
+        }
+        case 3:{
+            writeInHTMLWithConcact("<i><strong>",tabHTML);
+            break;
+        }
+    }
     writeInHTMLWithConcact(text,tabHTML);
+    switch(TAB[index][4]){
+        case 1:{
+            writeInHTMLWithConcact("</i>",tabHTML);
+            break;
+        }
+        case 2:{
+            writeInHTMLWithConcact("</strong>",tabHTML);
+            break;
+        }
+        case 3:{
+            writeInHTMLWithConcact("</i></strong>",tabHTML);
+            break;
+        }
+    }
 }
 
 void writeInHTMLWithConcact(char* text,int tabValue){
