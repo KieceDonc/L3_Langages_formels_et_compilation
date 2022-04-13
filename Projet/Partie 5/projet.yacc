@@ -4,7 +4,7 @@
         - Valentin Verstracte ( Travail réalisé seul après plusieurs discordes dans mon groupe )
 
     Compiler :
-        make analyseurs
+        make test
 
     Pour tester sur un fichier :
         analyseur.o < (nom_du_fichier).txt
@@ -39,12 +39,12 @@
 %%
     fichier: element 
         | element fichier 
-    element: TXT {writeInHTMLWithConcact("<p>",tabHTML);writeInHTMLCHText($1,tabHTML);writeInHTMLWithConcact("</p>",tabHTML);}
+    element: TXT {writeInHTMLCHText($1,tabHTML);}
         | LIGVID {writeInHTMLWithConcact("<br>",tabHTML);}
         | titre 
         | liste {listItemIndex = 1;listHasStarted = 0; listItemHasStarted = 0;tabHTML--;writeInHTMLWithConcact("</ul>",tabHTML);}
-        | texte_formatte {writeInHTMLWithConcact("<p>",tabHTML);writeInHTMLCHText($1,tabHTML);writeInHTMLWithConcact("</p>",tabHTML);}
-    titre: BALTIT TXT FINTIT {writeInHTMLWithConcact("<br>",tabHTML);writeInHTMLHeader($1,$2);}
+        | texte_formatte {writeInHTMLCHText($1,tabHTML);}
+    titre: BALTIT TXT FINTIT {writeInHTMLHeader($1,$2);}
     liste: DEBLIST liste_textes suite_liste
     suite_liste: ITEMLIST liste_textes suite_liste 
         | FINLIST {writeInHTMLList($1);}
@@ -69,9 +69,7 @@ void closeHTMLFilePointer(){
         fclose(htmlFile);
     }
 }
-void writeInHTMLParagraphe(int textIndex){
-    
-}
+
 void writeInHTMLList(int indexLastItem){
     int founded = 0;
     int index = indexLastItem-1;
@@ -166,7 +164,9 @@ void writeInHTMLCHText(int index){
             break;
         }
     }
+    tabHTML++;
     writeInHTMLWithConcact(text,tabHTML);
+    tabHTML--;
     switch(TAB[index][4]){
         case 1:{
             writeInHTMLWithConcact("</i>",tabHTML);

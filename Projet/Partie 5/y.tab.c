@@ -1335,7 +1335,7 @@ yyreduce:
     {
   case 4:
 #line 42 "projet.yacc"
-                 {writeInHTMLWithConcact("<p>",tabHTML);writeInHTMLCHText(yyvsp[0],tabHTML);writeInHTMLWithConcact("</p>",tabHTML);}
+                 {writeInHTMLCHText(yyvsp[0],tabHTML);}
 #line 1340 "y.tab.c"
     break;
 
@@ -1353,13 +1353,13 @@ yyreduce:
 
   case 8:
 #line 46 "projet.yacc"
-                         {writeInHTMLWithConcact("<p>",tabHTML);writeInHTMLCHText(yyvsp[0],tabHTML);writeInHTMLWithConcact("</p>",tabHTML);}
+                         {writeInHTMLCHText(yyvsp[0],tabHTML);}
 #line 1358 "y.tab.c"
     break;
 
   case 9:
 #line 47 "projet.yacc"
-                             {writeInHTMLWithConcact("<br>",tabHTML);writeInHTMLHeader(yyvsp[-2],yyvsp[-1]);}
+                             {writeInHTMLHeader(yyvsp[-2],yyvsp[-1]);}
 #line 1364 "y.tab.c"
     break;
 
@@ -1751,7 +1751,9 @@ void writeInHTMLCHText(int index){
             break;
         }
     }
+    tabHTML++;
     writeInHTMLWithConcact(text,tabHTML);
+    tabHTML--;
     switch(TAB[index][4]){
         case 1:{
             writeInHTMLWithConcact("</i>",tabHTML);

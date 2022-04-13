@@ -5,7 +5,7 @@
         - Valentin Verstracte ( Travail réalisé seul après plusieurs discordes dans mon groupe )
 
     Compiler :
-        make analyseur
+        make test
 
     Pour tester sur un fichier :
         analyseur.o < (nom_du_fichier).txt
