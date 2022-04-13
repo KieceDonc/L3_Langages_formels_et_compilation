@@ -1,0 +1,43 @@
+/*
+
+    Autheurs : 
+        - Valentin Verstracte ( Travail réalisé seul après plusieurs discordes dans mon groupe )
+        - Groupe N°5  
+
+    Compiler :
+        make analyseur
+
+    Pour tester :
+        make test
+
+    Pour tester sur un fichier :
+        analyseur.o < (nom_du_fichier).txt
+    
+*/
+
+Table des symboles : 
+
+    Exemple :
+
+        position	|length		|type		|listInfo		|shaping
+        0	        |	24	    |	Normal	|		    	|		
+        24	        |	25	    |	Titre	|	    		|		
+        49	        |	23	    |	Titre	|   			|		
+        72	        |	28	    |	Item	|	Item n°1	|		
+        100	        |	37	    |	Item	|	Item n°2	|		
+        137	        |	31	    |	Item	|	Item n°3	|		
+        168	        |	12	    |	Item	|	Item n°3	|	Italique
+        180	        |	14	    |	Normal	|		    	|		
+        194	        |	8	    |	Normal	|		    	|	Gras	
+        202	        |	12	    |	Normal	|			    |		
+        214	        |	17	    |	Normal	|			    |	Italique & Gras
+        231	        |	29	    |	Normal	|			    |		
+        260	        |	16	    |	Normal	|			    |		
+        276	        |	25	    |	Normal	|			    |		
+
+    Explication : 
+        - Position contient la position du premier charactère de la chaîne
+        - Length contient la longeur de la chaîne
+        - Type décrit la nature de la chaîne ( 0 = Normal, 1 = Item de liste, 2 = Titre )
+        - listInfo décrit la position de la chaîne dans la liste (Ex: 3 = item n°3, 0 = rien)
+        - Shaping décrit la mise en forme de la chaîne (0 = rien, 1 = Italique, 2 = Gras, 3 = Italique & Gras)

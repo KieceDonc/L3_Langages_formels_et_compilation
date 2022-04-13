@@ -1,16 +1,21 @@
 %{
     /*
-    
+
     Autheurs : 
         - Valentin Verstracte ( Travail réalisé seul après plusieurs discordes dans mon groupe )
+        - Groupe N°5  
 
     Compiler :
+        make analyseur
+
+    Pour tester :
         make test
 
     Pour tester sur un fichier :
         analyseur.o < (nom_du_fichier).txt
-        
+    
     */
+    
     #include <stdio.h>
     #include <string.h>
     #include "y.tab.h"
